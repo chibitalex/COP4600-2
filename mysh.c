@@ -2,6 +2,7 @@
 // COP 4600 Homework 2
 // 10/27/2021
 
+#define _GNU_SOURCE
 #define _POSIX_SOURCE
 #define PATH_MAX 32768
 #include <sys/types.h>
@@ -124,7 +125,7 @@ char *readInput(void)
   }
 }
 
-// Function To Split Raw Input Into Tokens On Spaces
+// Function To Split Raw Input Into Tokens On Spaces - Sebastian Almeida
 char **tokenize(char *line)
 {
   int bufsize = 128;
@@ -205,7 +206,7 @@ int main()
       history[commandCounter] = rawInput;
       commandCounter += 1;
     }
-    // If-Else Command Statemnt
+    // If-Else Command Statemnt // Sebastian Almeida
     // ByeBye Command
     if (strcmp(parsedInput[0], "byebye") == 0)
     {
@@ -237,7 +238,7 @@ int main()
         printf("Unrecognized Clear Flag\n");
       }
     }
-    // Replay Command This Will Not Show In History
+    // Replay Command This Will Not Show In History - Sebastian Almeida
     else if (strcmp(parsedInput[0], "replay") == 0)
     {
       if (parsedInput[1] == NULL)
@@ -261,7 +262,7 @@ int main()
         replayIndex = commandCounter - atoi(parsedInput[1]) - 1;
       }
     }
-    // Start Command
+    // Start Command - Ryan Doherty
     else if (strcmp(parsedInput[0], "start") == 0)
     {
       pid_t process = fork();
@@ -284,7 +285,7 @@ int main()
           waitpid(process, NULL, 0);
       }
     }
-    // Background Command
+    // Background Command - Ryan Doherty
     else if (strcmp(parsedInput[0], "background") == 0)
     {
       pid_t process = fork();
@@ -320,11 +321,12 @@ int main()
            }
        }
     }
-    // Dalek Command
+ // Dalek Command - alex koehler
+
     else if (strcmp(parsedInput[0], "dalek") == 0)
     {
       if(parsedInput[1] == NULL){
-           printf("Please enter a PID to exterminate.");
+           printf("Please enter a PID to exterminate.\n");
            continue;
        }
        else{
@@ -334,16 +336,38 @@ int main()
            victim = strtol(parsedInput[1], &helper, 10);
 
            if (kill(victim, SIGKILL) == 0){
-               printf("%d has been exterminated.", victim);
+               printf("%d has been exterminated.\n", victim);
            }
-           else if(kill(victim, SIGKILL) == 1){
-               printf("%d was too strong. Extermination failed.", victim);
+           else{
+               printf("%d was too strong. Extermination failed.\n", victim);
            }
        }
     }
+
+    // DalekAll Command - alex koehler
+
+    else if (strcmp(parsedInput[0], "dalekAll") == 0){
+        if(pidList == NULL){
+            printf("No programs to exterminate.\n");
+        }
+        else{
+            pid_list * curr = pidList;
+
+            while(curr != NULL){
+                pid_t victim = curr->pid;
+                if(kill(victim, 0) == 0){ // this for some reason isn't checking pro
+                kill(victim, SIGKILL);
+                printf("Exterminating %d.\n", victim);
+                }
+                curr = curr->next;
+            }
+        }
+    }
+      
     // Movetodir Command
     else if (strcmp(parsedInput[0], "movetodir") == 0)
     {
+      memmove(parsedInput[1], parsedInput[1]+1, strlen(parsedInput[1]));
       moveToDir(parsedInput[1]);
     }
     // Whereami Command
