@@ -200,8 +200,24 @@ int main()
         }
     }
     // Dalek Command
-    else if (strcmp(parsedInput[0], "dalek") == 0)
-    {
+    else if (strcmp(parsedInput[0], "dalek") == 0){
+        if(parsedInput[1] == NULL){
+            printf("Please enter a PID to exterminate.");
+            continue;
+        }
+        else{
+            char* helper;
+            pid_t victim;
+
+            victim = strtol(parsedInput[1], &helper, 10);
+
+            if (kill(victim, SIGKILL) == 0){
+                printf("%d has been exterminated.", victim);
+            }
+            else if(kill(victim, SIGKILL) == 1){
+                printf("%d was too strong. Extermination failed.", victim);
+            }  
+        }
     }
     // Movetodir Command
     else if (strcmp(parsedInput[0], "movetodir") == 0)
